@@ -1,0 +1,17 @@
+{
+  "name": "GoalMate",
+  "short_name": "GoalMate",
+  "description": "Z세대를 위한 일정 & 목표 수치 트래커",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8B5CF6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
