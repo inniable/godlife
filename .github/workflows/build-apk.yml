@@ -5,6 +5,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,9 +36,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+          cache: 'gradle'
 
       - name: Make Gradle Wrapper Executable
         run: chmod +x android/gradlew
@@ -44,10 +45,21 @@ jobs:
         run: |
           cd android
           ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk $GITHUB_WORKSPACE/GoalMate-Android.apk
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: GoalMate-Android-Debug-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: GoalMate-Android.apk
           retention-days: 14
+
+      - name: Publish APK to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-apk
+          name: "갓생살기(GoalMate) Android 최신 APK"
+          body: "스마트폰에서 `GoalMate-Android.apk` 파일을 다운로드받아 바로 설치하세요."
+          files: GoalMate-Android.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
