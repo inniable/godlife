@@ -45,25 +45,37 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x android/gradlew
 
-      - name: Build Debug APK with Gradle
+      - name: Generate Release Keystore and Build Signed APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/app-debug.apk $GITHUB_WORKSPACE/GoalMate-Android.apk
+          keytool -genkeypair -v \
+            -storetype PKCS12 \
+            -keystore upload-keystore.p12 \
+            -alias goalmate \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass goalmate123 \
+            -keypass goalmate123 \
+            -dname "CN=GoalMate, OU=Mobile, O=GoalMate, L=Seoul, S=Seoul, C=KR"
+          printf "storeFile=upload-keystore.p12\nstorePassword=goalmate123\nkeyAlias=goalmate\nkeyPassword=goalmate123\n" > keystore.properties
+          
+          ./gradlew assembleRelease --no-daemon
+          cp app/build/outputs/apk/release/app-release.apk $GITHUB_WORKSPACE/GoalMate-Android.apk
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GoalMate-Android-Debug-APK
+          name: GoalMate-Android-APK
           path: GoalMate-Android.apk
           retention-days: 14
 
-      - name: Publish APK to GitHub Releases
+      - name: Publish Signed APK to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest-apk
-          name: "갓생살기(GoalMate) Android 최신 APK"
-          body: "스마트폰에서 `GoalMate-Android.apk` 파일을 다운로드받아 바로 설치하세요."
+          name: "갓생살기(GoalMate) Android 정식 서명 최신 APK"
+          body: "스마트폰에서 `GoalMate-Android.apk` 파일을 다운로드받아 바로 설치하세요 (정식 서명 완료)."
           files: GoalMate-Android.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
