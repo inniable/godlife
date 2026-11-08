@@ -37,8 +37,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle
+      - name: Setup Gradle 8.7
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
 
       - name: Make Gradle Wrapper Executable
         run: chmod +x android/gradlew
@@ -46,7 +48,7 @@ jobs:
       - name: Build Debug APK with Gradle
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          gradle assembleDebug --no-daemon || ./gradlew assembleDebug --no-daemon
           cp app/build/outputs/apk/debug/app-debug.apk $GITHUB_WORKSPACE/GoalMate-Android.apk
 
       - name: Upload APK as Artifact
