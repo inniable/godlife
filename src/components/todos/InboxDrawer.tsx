@@ -65,11 +65,17 @@ export const InboxDrawer: React.FC = () => {
                       </span>
                     )}
                     <button
-                      onClick={() => deleteTodo(todo.id)}
-                      className="text-slate-400 hover:text-rose-500 p-1"
+                      type="button"
+                      onClick={() => {
+                        if (window.confirm(`'${todo.title}' 목표를 삭제하시겠습니까?`)) {
+                          deleteTodo(todo.id);
+                        }
+                      }}
+                      className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 active:bg-rose-100 transition-colors"
                       title="삭제"
+                      aria-label="삭제"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-[18px] h-[18px]" />
                     </button>
                   </div>
 

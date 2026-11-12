@@ -127,25 +127,53 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
 
   const categoryColor = category?.color_code || '#8B5CF6';
 
+  const handleTogglePrivacy = () => {
+    const nextPrivacy: Record<PrivacyLevel, PrivacyLevel> = {
+      public: 'friends',
+      friends: 'private',
+      private: 'public',
+    };
+    const newLevel = nextPrivacy[todo.privacy_level] || 'public';
+    updateTodo(todo.id, { privacy_level: newLevel });
+  };
+
   const getPrivacyIcon = () => {
     switch (todo.privacy_level) {
       case 'private':
         return (
-          <span title="나만보기">
-            <Lock className="w-3 h-3 text-slate-400" />
-          </span>
+          <button
+            type="button"
+            onClick={handleTogglePrivacy}
+            className="p-2 rounded-xl text-amber-600 hover:text-amber-700 hover:bg-amber-50 active:bg-amber-100 transition-colors"
+            title="공개 범위: 나만보기 (클릭하여 변경)"
+            aria-label="공개 범위: 나만보기 (클릭하여 변경)"
+          >
+            <Lock className="w-[18px] h-[18px]" />
+          </button>
         );
       case 'friends':
         return (
-          <span title="친구공개">
-            <Users className="w-3 h-3 text-violet-400" />
-          </span>
+          <button
+            type="button"
+            onClick={handleTogglePrivacy}
+            className="p-2 rounded-xl text-violet-600 hover:text-violet-700 hover:bg-violet-50 active:bg-violet-100 transition-colors"
+            title="공개 범위: 친구공개 (클릭하여 변경)"
+            aria-label="공개 범위: 친구공개 (클릭하여 변경)"
+          >
+            <Users className="w-[18px] h-[18px]" />
+          </button>
         );
       default:
         return (
-          <span title="전체공개">
-            <Globe className="w-3 h-3 text-slate-400" />
-          </span>
+          <button
+            type="button"
+            onClick={handleTogglePrivacy}
+            className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100 transition-colors"
+            title="공개 범위: 전체공개 (클릭하여 변경)"
+            aria-label="공개 범위: 전체공개 (클릭하여 변경)"
+          >
+            <Globe className="w-[18px] h-[18px]" />
+          </button>
         );
     }
   };
@@ -303,11 +331,12 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
               </span>
             )}
 
-            <div className="ml-auto flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+            <div className="ml-auto flex items-center gap-1 opacity-90 sm:opacity-75 sm:group-hover:opacity-100 transition-opacity">
               {getPrivacyIcon()}
               
               {/* Edit button */}
               <button
+                type="button"
                 onClick={() => {
                   setEditTitle(todo.title);
                   setEditTarget(todo.target_value);
@@ -317,27 +346,37 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
                   setEditPrivacy(todo.privacy_level);
                   setIsEditing(true);
                 }}
-                className="p-1 rounded-md text-slate-400 hover:text-violet-600 hover:bg-violet-50"
-                title="수정"
+                className="p-2 rounded-xl text-slate-500 hover:text-violet-600 hover:bg-violet-50 active:bg-violet-100 transition-colors"
+                title="목표 수정"
+                aria-label="목표 수정"
               >
-                <Edit2 className="w-3.5 h-3.5" />
+                <Edit2 className="w-[18px] h-[18px]" />
               </button>
 
               {/* Move to Inbox button */}
               <button
+                type="button"
                 onClick={() => moveToInbox(todo.id)}
-                className="p-1 rounded-md text-slate-400 hover:text-amber-600 hover:bg-amber-50"
+                className="p-2 rounded-xl text-slate-500 hover:text-amber-600 hover:bg-amber-50 active:bg-amber-100 transition-colors"
                 title="인박스로 보관 (주의력 분산 방지)"
+                aria-label="인박스로 보관"
               >
-                <Archive className="w-3.5 h-3.5" />
+                <Archive className="w-[18px] h-[18px]" />
               </button>
 
+              {/* Delete button */}
               <button
-                onClick={() => deleteTodo(todo.id)}
-                className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50"
-                title="삭제"
+                type="button"
+                onClick={() => {
+                  if (window.confirm(`'${todo.title}' 목표를 삭제하시겠습니까?`)) {
+                    deleteTodo(todo.id);
+                  }
+                }}
+                className="p-2 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 active:bg-rose-100 transition-colors"
+                title="목표 삭제"
+                aria-label="목표 삭제"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-[18px] h-[18px]" />
               </button>
             </div>
           </div>
