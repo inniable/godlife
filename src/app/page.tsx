@@ -200,9 +200,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-2">
-          <div className="w-10 h-10 rounded-2xl bg-violet-600 flex items-center justify-center text-white shadow-lg shadow-violet-200 animate-pulse">
-            <Sparkles className="w-5 h-5" />
-          </div>
+          <img src="/icon.svg" alt="갓생살기 로고" className="w-11 h-11 rounded-2xl shadow-lg shadow-violet-200/80 animate-pulse object-cover" />
           <span className="text-xs font-bold text-slate-500">갓생살기 불러오는 중...</span>
         </div>
       </div>
@@ -215,9 +213,7 @@ export default function Home() {
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-violet-200">
-              <Sparkles className="w-5 h-5" />
-            </div>
+            <img src="/icon.svg" alt="갓생살기 로고" className="w-9 h-9 rounded-2xl shadow-md shadow-violet-200/80 object-cover" />
             <div>
               <h1 className="text-base font-black tracking-tight text-slate-800">
                 갓생살기
