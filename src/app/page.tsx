@@ -23,6 +23,7 @@ import { CreateTodoModal } from '@/components/todos/CreateTodoModal';
 import { InboxDrawer } from '@/components/todos/InboxDrawer';
 import { DailyMoodLog } from '@/components/diary/DailyMoodLog';
 import { ShareCardModal } from '@/components/share/ShareCardModal';
+import { AdBanner } from '@/components/ads/AdBanner';
 import { format, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -453,6 +454,9 @@ export default function Home() {
             <DailyMoodLog />
           </section>
         )}
+
+        {/* Google AdMob Sponsored Banner Area */}
+        <AdBanner />
       </div>
 
       {/* Modals & Drawers */}

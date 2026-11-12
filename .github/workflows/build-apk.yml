@@ -45,7 +45,7 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x android/gradlew
 
-      - name: Generate Release Keystore and Build Signed APK
+      - name: Generate Release Keystore and Build Signed AAB Bundle & APK
         run: |
           cd android
           keytool -genkeypair -v \
@@ -60,22 +60,34 @@ jobs:
             -dname "CN=GoalMate, OU=Mobile, O=GoalMate, L=Seoul, S=Seoul, C=KR"
           printf "storeFile=upload-keystore.p12\nstorePassword=goalmate123\nkeyAlias=goalmate\nkeyPassword=goalmate123\n" > keystore.properties
           
+          # 1. Build Google Play Store Bundle (.aab)
+          ./gradlew bundleRelease --no-daemon
+          cp app/build/outputs/bundle/release/app-release.aab $GITHUB_WORKSPACE/GoalMate-Android.aab
+
+          # 2. Build Direct Install Signed APK (.apk)
           ./gradlew assembleRelease --no-daemon
           cp app/build/outputs/apk/release/app-release.apk $GITHUB_WORKSPACE/GoalMate-Android.apk
 
-      - name: Upload APK as Artifact
+      - name: Upload Builds as Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: GoalMate-Android-APK
-          path: GoalMate-Android.apk
+          name: GoalMate-Android-Builds
+          path: |
+            GoalMate-Android.aab
+            GoalMate-Android.apk
           retention-days: 14
 
-      - name: Publish Signed APK to GitHub Releases
+      - name: Publish Signed AAB and APK to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest-apk
-          name: "갓생살기(GoalMate) Android 정식 서명 최신 APK"
-          body: "스마트폰에서 `GoalMate-Android.apk` 파일을 다운로드받아 바로 설치하세요 (정식 서명 완료)."
-          files: GoalMate-Android.apk
+          name: "갓생살기(GoalMate) Android 스토어 번들(.aab) 및 최신 APK"
+          body: |
+            ### 갓생살기(GoalMate) 최신 빌드 배포
+            * **구글 플레이스토어 등록용 번들:** `GoalMate-Android.aab` (Google Play Console 심사용 정식 번들)
+            * **스마트폰 직접 설치용 APK:** `GoalMate-Android.apk` (정식 서명 완료)
+          files: |
+            GoalMate-Android.aab
+            GoalMate-Android.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
