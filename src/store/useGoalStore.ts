@@ -41,6 +41,7 @@ interface GoalState {
   deleteTodo: (id: string) => void;
   moveToInbox: (id: string) => void;
   moveFromInbox: (id: string, dueDate: string) => void;
+  restoreFromInbox: (id: string) => void;
 
   // Recurring & Backup actions
   ensureRecurringTodosForDate: (targetDate: string) => void;
@@ -330,6 +331,11 @@ export const useGoalStore = create<GoalState>()(
       moveFromInbox: (id, dueDate) =>
         set((state) => ({
           todos: state.todos.map((t) => (t.id === id ? { ...t, is_inbox: false, due_date: dueDate } : t)),
+        })),
+
+      restoreFromInbox: (id) =>
+        set((state) => ({
+          todos: state.todos.map((t) => (t.id === id ? { ...t, is_inbox: false } : t)),
         })),
 
       saveDailyLog: (date, moodEmoji, diary, privacy = 'public') =>

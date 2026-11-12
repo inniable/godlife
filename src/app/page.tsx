@@ -263,13 +263,13 @@ export default function Home() {
             {/* Inbox Button */}
             <button
               onClick={() => setIsInboxOpen(true)}
-              className="relative p-2.5 rounded-2xl text-slate-600 hover:bg-slate-100 transition-colors flex items-center gap-1.5 text-xs font-semibold"
-              title="인박스 보관함"
+              className="relative px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 transition-all flex items-center gap-1.5 text-xs font-bold active:scale-95 shadow-xs"
+              title="인박스 보관함 열기"
             >
-              <Archive className="w-4 h-4 text-amber-500" />
-              <span className="hidden sm:inline">인박스</span>
+              <Archive className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>인박스</span>
               {inboxCount > 0 && (
-                <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-black animate-pulse">
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px] font-black animate-pulse">
                   {inboxCount}
                 </span>
               )}
@@ -396,7 +396,7 @@ export default function Home() {
             {/* Todo Items List */}
             <div className="space-y-2.5">
               {dayTodos.length === 0 ? (
-                <div className="bg-white rounded-3xl p-10 text-center border border-slate-100 shadow-sm">
+                <div className="bg-white rounded-3xl p-8 sm:p-10 text-center border border-slate-100 shadow-sm">
                   <Flame className="w-10 h-10 text-violet-200 mx-auto mb-2" />
                   <p className="text-sm font-bold text-slate-700">이 날짜에 등록된 목표가 없습니다</p>
                   <p className="text-xs text-slate-400 mt-1 mb-4">
@@ -409,6 +409,33 @@ export default function Home() {
                     <Plus className="w-3.5 h-3.5" />
                     새 목표 등록하기
                   </button>
+
+                  {inboxCount > 0 && (
+                    <div className="mt-6 pt-5 border-t border-slate-100">
+                      <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200/90 flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                            <Archive className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-amber-950">
+                              인박스(보관함)에 목표가 {inboxCount}개 보관되어 있습니다!
+                            </p>
+                            <p className="text-[11px] text-amber-700 mt-0.5">
+                              보관함을 열어 오늘 날짜로 즉시 다시 꺼내오거나 수정할 수 있습니다.
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setIsInboxOpen(true)}
+                          className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all shrink-0"
+                        >
+                          <Archive className="w-4 h-4" />
+                          <span>인박스 보관함 열기 ({inboxCount})</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 dayTodos.map((todo) => {

@@ -356,9 +356,16 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
               {/* Move to Inbox button */}
               <button
                 type="button"
-                onClick={() => moveToInbox(todo.id)}
+                onClick={() => {
+                  const ok = window.confirm(
+                    `'${todo.title}' 목표를 인박스(보관함)로 이동하시겠습니까?\n\n※ 오늘 목표 목록에서 숨겨지며, 상단 [인박스] 메뉴에서 언제든 다시 꺼내오거나 수정할 수 있습니다.`
+                  );
+                  if (ok) {
+                    moveToInbox(todo.id);
+                  }
+                }}
                 className="p-2 rounded-xl text-slate-500 hover:text-amber-600 hover:bg-amber-50 active:bg-amber-100 transition-colors"
-                title="인박스로 보관 (주의력 분산 방지)"
+                title="인박스로 보관 (날짜 미지정 보관함으로 이동)"
                 aria-label="인박스로 보관"
               >
                 <Archive className="w-[18px] h-[18px]" />
