@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Save, Heart, ShieldCheck, Trash2, RotateCcw } from 'lucide-react';
 import { useGoalStore } from '@/store/useGoalStore';
-import { PrivacyLevel } from '@/types/database';
 
 export const DailyMoodLog: React.FC = () => {
   const { selectedDate, dailyLogs, saveDailyLog, deleteDailyLog } = useGoalStore();
@@ -21,19 +20,17 @@ export const DailyMoodLog: React.FC = () => {
 
   const [selectedEmoji, setSelectedEmoji] = useState(currentLog?.mood_emoji || '✨');
   const [diaryText, setDiaryText] = useState(currentLog?.one_line_diary || '');
-  const [privacy, setPrivacy] = useState<PrivacyLevel>(currentLog?.privacy_level || 'public');
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     setSelectedEmoji(currentLog?.mood_emoji || '✨');
     setDiaryText(currentLog?.one_line_diary || '');
-    setPrivacy(currentLog?.privacy_level || 'public');
     setIsSaved(false);
   }, [selectedDate, currentLog]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    saveDailyLog(selectedDate, selectedEmoji, diaryText, privacy);
+    saveDailyLog(selectedDate, selectedEmoji, diaryText, 'private');
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2000);
   };
@@ -112,22 +109,11 @@ export const DailyMoodLog: React.FC = () => {
           />
         </div>
 
-        {/* Bottom controls: Privacy & Save */}
+        {/* Bottom controls: Save */}
         <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-            {(['public', 'friends', 'private'] as PrivacyLevel[]).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPrivacy(p)}
-                className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
-                  privacy === p ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-400 hover:text-slate-600'
-                }`}
-              >
-                {p === 'public' ? '전체공개' : p === 'friends' ? '친구공개' : '나만보기'}
-              </button>
-            ))}
-          </div>
+          <span className="text-[11px] text-slate-400 font-medium">
+            🔒 나만 볼 수 있는 안전한 개인 일기입니다
+          </span>
 
           <button
             type="submit"

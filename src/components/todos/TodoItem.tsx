@@ -8,9 +8,6 @@ import {
   Play, 
   Pause, 
   RotateCcw, 
-  Lock, 
-  Users, 
-  Globe, 
   Trash2, 
   Archive,
   Clock,
@@ -18,7 +15,7 @@ import {
   X,
   Save
 } from 'lucide-react';
-import { Todo, GoalCategory, PrivacyLevel } from '@/types/database';
+import { Todo, GoalCategory } from '@/types/database';
 import { useGoalStore } from '@/store/useGoalStore';
 import { formatSecondsToTime } from '@/lib/utils';
 import confetti from 'canvas-confetti';
@@ -66,7 +63,6 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
   const [editUnit, setEditUnit] = useState(todo.unit || '회');
   const [editTime, setEditTime] = useState(todo.due_time || '');
   const [editCategoryId, setEditCategoryId] = useState(todo.category_id || '');
-  const [editPrivacy, setEditPrivacy] = useState<PrivacyLevel>(todo.privacy_level);
 
   // Direct numeric value editing
   const [isEditingCurrentVal, setIsEditingCurrentVal] = useState(false);
@@ -120,63 +116,11 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
       unit: editUnit,
       due_time: editTime || null,
       category_id: editCategoryId || null,
-      privacy_level: editPrivacy,
     });
     setIsEditing(false);
   };
 
   const categoryColor = category?.color_code || '#8B5CF6';
-
-  const handleTogglePrivacy = () => {
-    const nextPrivacy: Record<PrivacyLevel, PrivacyLevel> = {
-      public: 'friends',
-      friends: 'private',
-      private: 'public',
-    };
-    const newLevel = nextPrivacy[todo.privacy_level] || 'public';
-    updateTodo(todo.id, { privacy_level: newLevel });
-  };
-
-  const getPrivacyIcon = () => {
-    switch (todo.privacy_level) {
-      case 'private':
-        return (
-          <button
-            type="button"
-            onClick={handleTogglePrivacy}
-            className="p-2 rounded-xl text-amber-600 hover:text-amber-700 hover:bg-amber-50 active:bg-amber-100 transition-colors"
-            title="공개 범위: 나만보기 (클릭하여 변경)"
-            aria-label="공개 범위: 나만보기 (클릭하여 변경)"
-          >
-            <Lock className="w-[18px] h-[18px]" />
-          </button>
-        );
-      case 'friends':
-        return (
-          <button
-            type="button"
-            onClick={handleTogglePrivacy}
-            className="p-2 rounded-xl text-violet-600 hover:text-violet-700 hover:bg-violet-50 active:bg-violet-100 transition-colors"
-            title="공개 범위: 친구공개 (클릭하여 변경)"
-            aria-label="공개 범위: 친구공개 (클릭하여 변경)"
-          >
-            <Users className="w-[18px] h-[18px]" />
-          </button>
-        );
-      default:
-        return (
-          <button
-            type="button"
-            onClick={handleTogglePrivacy}
-            className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-blue-50 active:bg-blue-100 transition-colors"
-            title="공개 범위: 전체공개 (클릭하여 변경)"
-            aria-label="공개 범위: 전체공개 (클릭하여 변경)"
-          >
-            <Globe className="w-[18px] h-[18px]" />
-          </button>
-        );
-    }
-  };
 
   // Inline Edit View
   if (isEditing) {
@@ -241,32 +185,18 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <label className="block text-[11px] font-semibold text-slate-500 mb-1">카테고리</label>
-            <select
-              value={editCategoryId}
-              onChange={(e) => setEditCategoryId(e.target.value)}
-              className="w-full px-2 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700"
-            >
-              <option value="">없음</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-[11px] font-semibold text-slate-500 mb-1">공개 범위</label>
-            <select
-              value={editPrivacy}
-              onChange={(e) => setEditPrivacy(e.target.value as PrivacyLevel)}
-              className="w-full px-2 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700"
-            >
-              <option value="public">전체공개</option>
-              <option value="friends">친구공개</option>
-              <option value="private">나만보기</option>
-            </select>
-          </div>
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-500 mb-1">카테고리</label>
+          <select
+            value={editCategoryId}
+            onChange={(e) => setEditCategoryId(e.target.value)}
+            className="w-full px-2 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700"
+          >
+            <option value="">없음</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="flex justify-end gap-1.5 pt-1">
@@ -332,8 +262,6 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
             )}
 
             <div className="ml-auto flex items-center gap-1 opacity-90 sm:opacity-75 sm:group-hover:opacity-100 transition-opacity">
-              {getPrivacyIcon()}
-              
               {/* Edit button */}
               <button
                 type="button"
@@ -343,7 +271,6 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, category }) => {
                   setEditUnit(todo.unit || '회');
                   setEditTime(todo.due_time || '');
                   setEditCategoryId(todo.category_id || '');
-                  setEditPrivacy(todo.privacy_level);
                   setIsEditing(true);
                 }}
                 className="p-2 rounded-xl text-slate-500 hover:text-violet-600 hover:bg-violet-50 active:bg-violet-100 transition-colors"

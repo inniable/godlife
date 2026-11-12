@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, Hash, Timer as TimerIcon, Calendar, Archive, Repeat, AlertCircle } from 'lucide-react';
 import { useGoalStore } from '@/store/useGoalStore';
-import { TodoType, PrivacyLevel } from '@/types/database';
+import { TodoType } from '@/types/database';
 
 interface CreateTodoModalProps {
   isOpen: boolean;
@@ -24,7 +24,6 @@ export const CreateTodoModal: React.FC<CreateTodoModalProps> = ({ isOpen, onClos
   const [isInbox, setIsInbox] = useState(false);
   const [isRecurring, setIsRecurring] = useState(false);
   const [repeatType, setRepeatType] = useState<'daily' | 'weekday' | 'weekly'>('daily');
-  const [privacyLevel, setPrivacyLevel] = useState<PrivacyLevel>('public');
   const [errorMessage, setErrorMessage] = useState('');
 
   // Sync with selectedDate when modal opens
@@ -69,7 +68,7 @@ export const CreateTodoModal: React.FC<CreateTodoModalProps> = ({ isOpen, onClos
       is_inbox: isInbox,
       is_recurring: isRecurring,
       repeat_type: isRecurring ? repeatType : 'none',
-      privacy_level: privacyLevel,
+      privacy_level: 'public',
     });
 
     setTitle('');
@@ -326,25 +325,6 @@ export const CreateTodoModal: React.FC<CreateTodoModalProps> = ({ isOpen, onClos
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Privacy Level Selector */}
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-xs font-semibold text-slate-600">공개 범위</span>
-            <div className="flex gap-1">
-              {(['public', 'friends', 'private'] as PrivacyLevel[]).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setPrivacyLevel(p)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-                    privacyLevel === p ? 'bg-slate-800 text-white shadow-sm' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                  }`}
-                >
-                  {p === 'public' ? '전체' : p === 'friends' ? '친구' : '나만'}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Submit Button */}
